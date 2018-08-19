@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>速度和加速度</title>
+    <style>
+        #canvas {
+            margin: 30px auto;
+            display: block;
+            border: 4px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Sprite.js"></script>
+    <script src="./js/Renderer.js"></script>
+    <script src="./js/Stage.js"></script>
+    <script>
+        var canvas = document.getElementById('canvas'),
+            ctx = canvas.getContext('2d'),
+            stage = new Stage(ctx);
+
+        var arrowImg = new Image();
+        arrowImg.onload = function () {
+            var arrow1Vx = 4;
+            var arrow1Vy = 2;
+            var arrow2Vx = 0;
+            var arrow2Vy = 0;
+            var arrow2Ax = 0.5;
+            var arrow2Ay = 0.2;
+            var arrow1 = new Sprite({
+                x: 24,
+                y: 24,
+                width: 48,
+                height: 48,
+                rotation: Math.PI / 4,
+                pivotX: 24,
+                pivotY: 24,
+                image: arrowImg
+            });
+            stage.addChild(arrow1);
+
+            var arrow2 = new Sprite({
+                x: 24,
+                y: 24,
+                width: 48,
+                height: 48,
+                rotation: Math.PI / 4,
+                pivotX: 24,
+                pivotY: 24,
+                image: arrowImg
+            });
+            stage.addChild(arrow2);
+
+            stage.update = function(){
+                arrow1.x += arrow1Vx;
+                arrow1.y += arrow1Vy;
+
+                arrow2Vx += arrow2Ax;
+                arrow2Vy += arrow2Ay;
+                arrow2.x += arrow2Vx;
+                arrow2.y += arrow2Vy;
+            }
+
+            stage.render();
+        }
+
+        arrowImg.src = './images/arrow.png';
+    </script>
+</body>
+
+</html>

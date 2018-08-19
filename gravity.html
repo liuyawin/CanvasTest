@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>速度和加速度</title>
+    <style>
+        #canvas {
+            margin: 30px auto;
+            display: block;
+            border: 4px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Sprite.js"></script>
+    <script src="./js/Renderer.js"></script>
+    <script src="./js/Stage.js"></script>
+    <script>
+        var canvas = document.getElementById('canvas'),
+            ctx = canvas.getContext('2d'),
+            stage = new Stage(ctx),
+            gravity = 4,
+            vy = 0,
+            canMove = true;
+
+        var ballImg = new Image();
+        ballImg.onload = function () {
+            var ball = new Sprite({
+                x: 320,
+                y: 304,
+                width: 32,
+                height: 32,
+                pivotX: 16,
+                pivotY: 16,
+                image: ballImg
+            });
+            stage.addChild(ball);
+
+            canvas.addEventListener('mousedown', function () {
+                canMove = false;
+                window.addEventListener('mousemove', moveBall);
+            });
+
+            window.addEventListener('mouseup', function () {
+                canMove = true;
+                window.removeEventListener('mousemove', moveBall);
+            });
+
+            stage.update = function () {
+                if (!canMove) {
+                    return;
+                }
+
+                vy += gravity;
+                ball.y += vy;
+                if (ball.y + 16 >= canvas.height) {
+                    ball.y  = canvas.height - 16;
+                    vy = -vy;
+                }
+
+            }
+
+            stage.render();
+
+            function moveBall(e) {
+                ball.x = e.clientX - canvas.offsetLeft;
+                ball.y = e.clientY - canvas.offsetTop;
+
+                if (ball.x < 16) {
+                    ball.x = 16;
+                }else if (ball.x + 16 > canvas.width) {
+                    ball.x = canvas.width - 16;
+                }
+                if (ball.y < 16) {
+                    ball.y = 16;
+                }else if (ball.y + 16 > canvas.height) {
+                    ball.y = canvas.height - 16;
+                }
+            }
+        }
+
+        ballImg.src = './images/ball.png';
+    </script>
+</body>
+
+</html>
