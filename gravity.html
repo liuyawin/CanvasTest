@@ -20,16 +20,20 @@
     <script src="./js/Sprite.js"></script>
     <script src="./js/Renderer.js"></script>
     <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
     <script>
         var canvas = document.getElementById('canvas'),
             ctx = canvas.getContext('2d'),
             stage = new Stage(ctx),
-            gravity = 4,
+            gravity = 2,
             vy = 0,
             canMove = true;
 
-        var ballImg = new Image();
-        ballImg.onload = function () {
+        var loader = new Loader();
+        loader.add({name: 'ball', src: './images/ball.png'});
+        loader.load(createScene);
+
+        function createScene() {
             var ball = new Sprite({
                 x: 320,
                 y: 304,
@@ -37,7 +41,7 @@
                 height: 32,
                 pivotX: 16,
                 pivotY: 16,
-                image: ballImg
+                image: loader.get('ball')
             });
             stage.addChild(ball);
 
@@ -83,8 +87,6 @@
                 }
             }
         }
-
-        ballImg.src = './images/ball.png';
     </script>
 </body>
 

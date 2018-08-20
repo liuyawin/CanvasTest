@@ -20,13 +20,19 @@
     <script src="./js/Sprite.js"></script>
     <script src="./js/Renderer.js"></script>
     <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
     <script>
         var canvas = document.getElementById('canvas'),
             ctx = canvas.getContext('2d'),
             stage = new Stage(ctx);
 
-        var arrowImg = new Image();
-        arrowImg.onload = function () {
+            
+        var loader = new Loader();
+        loader.add({name: 'arrow', src: './images/arrow.png'});
+        loader.load(createScene);
+
+
+        function createScene() {
             var arrow1 = new Sprite({
                 x: 24,
                 y: 24,
@@ -35,7 +41,7 @@
                 rotation: Math.PI / 4,
                 pivotX: 24,
                 pivotY: 24,
-                image: arrowImg
+                image: loader.get('arrow')
             });
 
             var arrow2 = new Sprite({
@@ -46,7 +52,7 @@
                 rotation: Math.PI / 4,
                 pivotX: 24,
                 pivotY: 24,
-                image: arrowImg
+                image: loader.get('arrow')
             });
 
             var arrow3 = new Sprite({
@@ -57,7 +63,7 @@
                 rotation: Math.PI / 4,
                 pivotX: 24,
                 pivotY: 24,
-                image: arrowImg
+                image: loader.get('arrow')
             });
 
             stage.addChild(arrow1);
@@ -73,8 +79,8 @@
             stage.update = function(){
                 if (arrow1.x - 24 > canvas.width - arrow1.width) {
                     arrow1.vx = -2;
-                } else if (arrow.x < 24) {
-                    arrow.vx = 2;
+                } else if (arrow1.x < 24) {
+                    arrow1.vx = 2;
                 }
                 if (arrow1.y - 24 > canvas.height - arrow1.height) {
                     arrow1.vy = -1;
@@ -93,9 +99,9 @@
                     arrow2.vy = 2;
                 }
 
-                arrow.x += arrow.vx;
-                arrow.y += arrow.vy;
-                arrow.rotation += 0.05;
+                arrow1.x += arrow1.vx;
+                arrow1.y += arrow1.vy;
+                arrow1.rotation += 0.05;
 
                 arrow2.x += arrow2.vx;
                 arrow2.y += arrow2.vy;
@@ -104,8 +110,6 @@
             }
             stage.render();
         }
-
-        arrowImg.src = './images/arrow.png';
     </script>
 </body>
 
