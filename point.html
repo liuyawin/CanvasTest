@@ -20,13 +20,17 @@
     <script src="./js/Sprite.js"></script>
     <script src="./js/Renderer.js"></script>
     <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
     <script>
         var canvas = document.getElementById('canvas'),
             ctx = canvas.getContext('2d'),
             stage = new Stage(ctx);
 
-        var arrowImg = new Image();
-        arrowImg.onload = function () {
+        var loader = new Loader();
+        loader.add({ name: 'arrow', src: './images/arrow.png' });
+        loader.load(createScene);
+
+        function createScene() {
             var arrow1Vx = 4;
             var arrow1Vy = 2;
             var arrow2Vx = 0;
@@ -41,7 +45,7 @@
                 rotation: Math.PI / 4,
                 pivotX: 24,
                 pivotY: 24,
-                image: arrowImg
+                image: loader.get('arrow')
             });
             stage.addChild(arrow1);
 
@@ -53,11 +57,11 @@
                 rotation: Math.PI / 4,
                 pivotX: 24,
                 pivotY: 24,
-                image: arrowImg
+                image: loader.get('arrow')
             });
             stage.addChild(arrow2);
 
-            stage.update = function(){
+            stage.update = function () {
                 arrow1.x += arrow1Vx;
                 arrow1.y += arrow1Vy;
 
@@ -69,8 +73,6 @@
 
             stage.render();
         }
-
-        arrowImg.src = './images/arrow.png';
     </script>
 </body>
 

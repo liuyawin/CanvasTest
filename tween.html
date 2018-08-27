@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>速度和加速度</title>
+    <style>
+        #canvas {
+            margin: 30px auto;
+            display: block;
+            border: 4px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Sprite.js"></script>
+    <script src="./js/Renderer.js"></script>
+    <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
+    <script src="./js/tween/Ease.js"></script>
+    <script src="./js/tween/Tween.js"></script>
+    <script>
+        var canvas = document.getElementById('canvas'),
+            ctx = canvas.getContext('2d'),
+            stage = new Stage(ctx),
+            gravity = 2,
+            vy = 0,
+            canMove = true;
+
+        var loader = new Loader();
+        loader.add({name: 'ball', src: './images/ball.png'});
+        loader.load(createScene);
+
+        function createScene() {
+            var ball = new Sprite({
+                x: 120,
+                y: 100,
+                width: 32,
+                height: 32,
+                pivotX: 16,
+                pivotY: 16,
+                image: loader.get('ball')
+            });
+            stage.addChild(ball);
+
+            Tween.to(ball, {x: 400, y: 200, rotation: Math.PI * 4}, 2000, Ease.Bounce);
+
+            stage.update = function () {
+                Tween.tick();
+            }
+
+            stage.render();
+        }
+    </script>
+</body>
+
+</html>
