@@ -70,5 +70,6 @@ Tween.to = function(target, toProps, duration, ease){
     var tween = new Tween(target, toProps, duration, ease);
     tween._startTime = +(new Date());
     Tween.add(tween);
+    return tween;
 }
 Tween._tweens = [];

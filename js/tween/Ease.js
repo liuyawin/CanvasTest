@@ -18,6 +18,7 @@ var Ease = (function(){
     var Bounce = function(k){
         return 1 - Math.cos(k * 4 * Math.PI) * (1 - k);
     }
+    
     return {
         Linear: Linear,
         EaseIn: EaseIn,

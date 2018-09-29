@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>圆和椭圆</title>
+    <style>
+        #canvas {
+            margin: 30px auto;
+            display: block;
+            border: 4px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Polyfill.js"></script>
+    <script src="./js/Sprite.js"></script>
+    <script src="./js/Renderer.js"></script>
+    <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
+    <script>
+        var stage = new Stage(document.getElementById('canvas'));
+
+        var loader = new Loader();
+        loader.add({ name: 'ball', src: './images/ball.png' });
+        loader.load(createScene);
+
+        function createScene() {
+            var centerX = 320,
+                centerY = 160,
+                radius = 80,
+                speed = 0.1,
+                angle1 = 0,
+                angle2 = 0,
+                radiusX = 200,
+                radiusY = 100;
+
+            //绕圆形运动的球
+            var ball1 = new Sprite({
+                x: Math.random() * stage.width,
+                y: Math.random() * stage.height,
+                width: 32,
+                height: 32,
+                pivotX: 16,
+                pivotY: 16,
+                image: loader.get('ball')
+            });
+            stage.addChild(ball1);
+            //绕椭圆形运动的球
+            var ball2 = new Sprite({
+                x: Math.random() * stage.width,
+                y: Math.random() * stage.height,
+                width: 32,
+                height: 32,
+                pivotX: 16,
+                pivotY: 16,
+                image: loader.get('ball')
+            });
+            stage.addChild(ball2);
+
+            stage.update = function () {
+                //绕圆形运动
+                ball1.x = centerX + Math.cos(angle1) * radius;
+                ball1.y = centerY + Math.sin(angle1) * radius;
+
+                angle1 += speed;
+
+                //绕椭圆形运动
+                ball2.x = centerX + Math.cos(angle2) * radiusX;
+                ball2.y = centerY + Math.sin(angle2) * radiusY;
+
+                angle2 += speed;
+            }
+
+            stage.render();
+
+        }
+    </script>
+</body>
+
+</html>

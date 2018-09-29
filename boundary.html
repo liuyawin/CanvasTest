@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #canvas {
+            margin: 30px auto;
+            display: block;
+            border: 4px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Polyfill.js"></script>
+    <script src="./js/Sprite.js"></script>
+    <script src="./js/Renderer.js"></script>
+    <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
+    <script>
+        var stage = new Stage(document.getElementById('canvas'));
+
+
+        var loader = new Loader();
+        loader.add({ name: 'arrow', src: './images/arrow.png' });
+        loader.load(createScene);
+
+
+        function createScene() {
+            var arrow1 = new Sprite({
+                x: 24,
+                y: 24,
+                width: 48,
+                height: 48,
+                rotation: Math.PI / 4,
+                pivotX: 24,
+                pivotY: 24,
+                image: loader.get('arrow')
+            });
+
+            var arrow2 = new Sprite({
+                x: 224,
+                y: 224,
+                width: 48,
+                height: 48,
+                rotation: Math.PI / 4,
+                pivotX: 24,
+                pivotY: 24,
+                image: loader.get('arrow')
+            });
+
+            var arrow3 = new Sprite({
+                x: 324,
+                y: 224,
+                width: 48,
+                height: 48,
+                rotation: Math.PI / 4,
+                pivotX: 24,
+                pivotY: 24,
+                image: loader.get('arrow')
+            });
+
+            stage.addChild(arrow1);
+            stage.addChild(arrow2);
+            stage.addChild(arrow3);
+
+            arrow1.vx = 4;
+            arrow1.vy = 2;
+
+            arrow2.vx = 4;
+            arrow2.vy = 2;
+
+            stage.update = function () {
+                arrow1.x += arrow1.vx;
+                arrow1.y += arrow1.vy;
+                arrow1.rotation += 0.05;
+
+                arrow2.x += arrow2.vx;
+                arrow2.y += arrow2.vy;
+                arrow2.rotation -= 0.05;
+                arrow3.rotation += 0.2;
+
+                if (arrow1.x - 24 > stage.width - arrow1.width) {
+                    arrow1.vx = -arrow1.vx;
+                    arrow1.x = stage.width - arrow1.width + 24;
+                } else if (arrow1.x < 24) {
+                    arrow1.vx = -arrow1.vx;
+                    arrow1.x = 24;
+                }
+                if (arrow1.y - 24 > stage.height - arrow1.height) {
+                    arrow1.vy = -arrow1.vy;
+                    arrow1.y = stage.height - arrow1.height + 24;
+                } else if (arrow1.y < 24) {
+                    arrow1.vy = -arrow1.vy;
+                    arrow1.y = 24;
+                }
+
+                if (arrow2.x - 24 > stage.width - arrow2.width) {
+                    arrow2.vx = -arrow2.vx * 0.7;
+                    arrow2.x = stage.width - arrow2.width + 24;
+                } else if (arrow2.x < 24) {
+                    arrow2.vx = -arrow2.vx * 0.7;
+                    arrow2.x = 24;
+                }
+                if (arrow2.y - 24 > stage.height - arrow2.height) {
+                    arrow2.vy = -arrow2.vy * 0.7;
+                    arrow2.y = stage.height - arrow2.height + 24;
+                } else if (arrow2.y < 24) {
+                    arrow2.vy = -arrow2.vy * 0.7;
+                    arrow2.y = 24;
+                }
+
+            }
+            stage.render();
+        }
+    </script>
+</body>
+
+</html>

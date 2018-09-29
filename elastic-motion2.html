@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>弹性运动</title>
+    <style>
+        #canvas {
+            margin: 30px auto;
+            display: block;
+            border: 4px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Polyfill.js"></script>
+    <script src="./js/Sprite.js"></script>
+    <script src="./js/Renderer.js"></script>
+    <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
+    <script src="./js/Graphics.js"></script>
+    <script>
+        var stage = new Stage(document.getElementById('canvas'));
+
+        var loader = new Loader();
+        loader.add({ name: 'ball', src: './images/ball.png' });
+        loader.load(createScene);
+
+        function createScene() {
+            var spring = 0.02,
+                friction = 0.96,
+                targetX = stage.width / 2,
+                targetY = stage.height - 80,
+                vx = 0,
+                vy = 0,
+                canvasTop = stage.canvas.offsetTop,
+                canvasLeft = stage.canvas.offsetLeft,
+                mouseX,
+                mouseY;
+
+            //基本弹性运动的小球
+            var ball = new Sprite({
+                x: 100,
+                y: 30,
+                x: stage.width / 2,
+                y: stage.height / 2,
+                pivotX: 16,
+                pivotY: 16,
+                image: loader.get('ball')
+            });
+            stage.addChild(ball);
+
+            var graphic = new Graphics({ ctx: stage.ctx });
+            stage.addChild(graphic);
+
+            stage.update = function () {
+                if (mouseX === undefined) {
+                    return;
+                }
+                var dx = mouseX - ball.x,
+                    dy = mouseY - ball.y,
+                    ax = dx * spring
+                ay = dy * spring;
+                vx += ax;
+                vy += ay;
+                vx *= friction;
+                vy *= friction;
+                ball.x += vx;
+                ball.y += vy;
+
+                graphic.clear();
+                graphic.lineStyle();
+                graphic.moveTo(ball.x, ball.y);
+                graphic.lineTo(mouseX, mouseY);
+                graphic.endFill();
+            }
+
+            stage.render();
+
+            stage.canvas.addEventListener('mousedown', handleMouseDown);
+
+            function handleMouseDown(e) {
+                mouseX = e.clientX - canvasLeft;
+                mouseY = e.clientY - canvasTop;
+
+                window.addEventListener('mousemove', handleMouseMove);
+                window.addEventListener('mouseup', handleMouseUp);
+
+            }
+            function handleMouseMove(e) {
+                mouseX = e.clientX - canvasLeft;
+                mouseY = e.clientY - canvasTop;
+            }
+            function handleMouseUp(e) {
+                window.removeEventListener('mousemove', handleMouseMove);
+                window.removeEventListener('mouseup', handleMouseUp);
+            }
+        }
+    </script>
+</body>
+
+</html>

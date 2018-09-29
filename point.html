@@ -17,26 +17,27 @@
 
 <body>
     <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Polyfill.js"></script>
     <script src="./js/Sprite.js"></script>
     <script src="./js/Renderer.js"></script>
     <script src="./js/Stage.js"></script>
     <script src="./js/Loader.js"></script>
     <script>
-        var canvas = document.getElementById('canvas'),
-            ctx = canvas.getContext('2d'),
-            stage = new Stage(ctx);
-
+        var stage = new Stage(document.getElementById('canvas'));
         var loader = new Loader();
         loader.add({ name: 'arrow', src: './images/arrow.png' });
         loader.load(createScene);
 
         function createScene() {
-            var arrow1Vx = 4;
-            var arrow1Vy = 2;
-            var arrow2Vx = 0;
-            var arrow2Vy = 0;
-            var arrow2Ax = 0.5;
-            var arrow2Ay = 0.2;
+            var arrow1Vx = 4,
+                arrow1Vy = 2,
+                arrow2Vx = 0,
+                arrow2Vy = 0,
+                arrow2Ax = 0.5,
+                arrow2Ay = 0.2,
+                arrow3A = 0.2,
+                arrow4A = 0,
+                arrow4W = 0.01;
             var arrow1 = new Sprite({
                 x: 24,
                 y: 24,
@@ -61,6 +62,30 @@
             });
             stage.addChild(arrow2);
 
+            var arrow3 = new Sprite({
+                x: 24,
+                y: 24,
+                width: 48,
+                height: 48,
+                rotation: 0,
+                pivotX: 24,
+                pivotY: 24,
+                image: loader.get('arrow')
+            });
+            stage.addChild(arrow3);
+
+            var arrow4 = new Sprite({
+                x: 104,
+                y: 24,
+                width: 48,
+                height: 48,
+                rotation: 0,
+                pivotX: 24,
+                pivotY: 24,
+                image: loader.get('arrow')
+            });
+            stage.addChild(arrow4);
+
             stage.update = function () {
                 arrow1.x += arrow1Vx;
                 arrow1.y += arrow1Vy;
@@ -69,6 +94,15 @@
                 arrow2Vy += arrow2Ay;
                 arrow2.x += arrow2Vx;
                 arrow2.y += arrow2Vy;
+
+                arrow3.rotation += arrow3A;
+
+                arrow4A += arrow4W;
+                if (arrow4A > 3) {
+                    arrow4A = 0;
+                    arrow4.rotation = 0;
+                }
+                arrow4.rotation += arrow4A;
             }
 
             stage.render();

@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>碰撞检测</title>
+    <style>
+        #canvas {
+            margin: 30px auto;
+            display: block;
+            border: 4px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Polyfill.js"></script>
+    <script src="./js/Sprite.js"></script>
+    <script src="./js/Renderer.js"></script>
+    <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
+    <script>
+        var stage = new Stage(document.getElementById('canvas')),
+            ballArr = [],
+            spring = 0.4,//球的反弹系数
+            gravity = 0.4,//重力
+            friction = 0.96,//摩擦力
+            bounce = -0.5;//墙壁的反弹系数
+
+        var loader = new Loader();
+        loader.add({ name: 'ball', src: './images/ball.png' });
+        loader.load(createScene);
+
+        function createScene() {
+            //产生20个球，速度、位置、大小随机
+            for (var i = 0; i < 24; i++) {
+                var width = (Math.random() * 1.5 + 0.5) * 32;
+                var height = width;
+                var vx = (Math.random() * 0.5 + 0.5) * 2;
+                var vy = (Math.random() * 0.5 + 0.5) * 2;
+                var ball = new Sprite({
+                    x: Math.random() * (stage.width - 64) + 32,
+                    y: Math.random() * (stage.height - 64) + 32,
+                    width: width,
+                    height: height,
+                    pivotX: width / 2,
+                    pivotY: width / 2,
+                    image: loader.get('ball')
+                });
+                ball.vx = vx;
+                ball.vy = vy;
+                stage.addChild(ball);
+                ballArr.push(ball);
+            }
+
+            stage.update = function () {
+                //所有球两两之间进行碰撞检测
+                for (var i = 0; i < ballArr.length; i++) {
+                    var ball0 = ballArr[i];
+                    for (var j = i + 1; j < ballArr.length; j++) {
+                        var ball1 = ballArr[j];
+                        var dx = ball1.x - ball0.x;
+                        var dy = ball1.y - ball0.y;
+                        var dist = Math.sqrt(dx * dx + dy * dy);
+                        var minDist = ball0.width / 2 + ball1.width / 2;
+                        //若两球球心之间的距离小于两球半径之和，则发生了碰撞
+                        if (dist < minDist) {
+                            var angle = Math.atan2(dy, dx);
+                            var tx = ball0.x + Math.cos(angle) * minDist;
+                            var ty = ball0.y + Math.sin(angle) * minDist;
+                            var ax = (tx - ball1.x) * spring;
+                            var ay = (ty - ball1.y) * spring;
+
+                            ball0.vx -= ax;
+                            ball0.vy -= ay;
+                            ball1.vx += ax;
+                            ball1.vy += ay;
+                        }
+                    }
+
+                }
+
+                for (var i = 0; i < ballArr.length; i++) {
+                    move(ballArr[i]);
+                }
+            }
+
+            stage.render();
+        }
+
+        function move(ball) {
+            ball.vy += gravity;
+            ball.x += ball.vx;
+            ball.y += ball.vy;
+            //边界碰撞检测
+            if (ball.x + ball.width / 2 > stage.width) {
+                ball.x = stage.width - ball.width / 2;
+                ball.vx *= bounce;
+            }
+            if (ball.x - ball.width / 2 < 0) {
+                ball.x = ball.width / 2;
+                ball.vx *= bounce;
+            }
+
+            if (ball.y + ball.height / 2 > stage.height) {
+                ball.y = stage.height - ball.height / 2;
+                ball.vy *= bounce;
+            }
+            if (ball.y - ball.height / 2 < 0) {
+                ball.y = ball.height / 2;
+                ball.vx *= bounce;
+            }
+            //对位于盒子底部的球，加上摩擦力的影响
+            if (ball.vy <= 0 && ball.y >= stage.height - ball.height / 2) {
+                ball.vx *= friction;
+            }
+        }
+    </script>
+</body>
+
+</html>

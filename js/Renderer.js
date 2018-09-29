@@ -1,6 +1,7 @@
 function Renderer(ctx){
     this.ctx = ctx;
 }
+
 Renderer.prototype = {
     constructor: Renderer,
     render: function (displayObjectArr) {
@@ -8,7 +9,7 @@ Renderer.prototype = {
             return;
         }
 
-        ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
+        this.ctx.clearRect(0, 0, this.ctx.canvas.width, this.ctx.canvas.height);
 
         for (var i = 0, n = displayObjectArr.length; i < n; i++) {
             displayObjectArr[i].draw(this.ctx);

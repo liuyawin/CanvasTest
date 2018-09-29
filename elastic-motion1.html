@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>弹性运动</title>
+    <style>
+        #canvas {
+            margin: 30px auto;
+            display: block;
+            border: 4px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Polyfill.js"></script>
+    <script src="./js/Sprite.js"></script>
+    <script src="./js/Renderer.js"></script>
+    <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
+    <script>
+        var stage = new Stage(document.getElementById('canvas'));
+
+        var loader = new Loader();
+        loader.add({ name: 'ball', src: './images/ball.png' });
+        loader.load(createScene);
+
+        function createScene() {
+            var spring = 0.02,
+                friction = 0.96,
+                targetX = stage.width / 2,
+                targetY = stage.height - 80,
+                vx1 = 0,
+                vx2 = 0,
+                vx3 = 0,
+                vy3 = 0;
+
+            //基本弹性运动的小球
+            var ball1 = new Sprite({
+                x: 100,
+                y: 30,
+                width: 32,
+                height: 32,
+                pivotX: 16,
+                pivotY: 16,
+                image: loader.get('ball')
+            });
+            stage.addChild(ball1);
+
+            //加上摩擦力的弹性运动的小球
+            var ball2 = new Sprite({
+                x: 100,
+                y: 100,
+                width: 32,
+                height: 32,
+                pivotX: 16,
+                pivotY: 16,
+                image: loader.get('ball')
+            });
+            stage.addChild(ball2);
+
+            //加上摩擦力朝xy方向运动的弹性运动的小球
+            var ball3 = new Sprite({
+                x: 100,
+                y: 180,
+                width: 32,
+                height: 32,
+                pivotX: 16,
+                pivotY: 16,
+                image: loader.get('ball')
+            });
+            stage.addChild(ball3);
+
+            stage.update = function () {
+                var dx1 = targetX - ball1.x,
+                    ax1 = dx1 * spring;
+                vx1 += ax1;
+                ball1.x += vx1;
+
+                var dx2 = targetX - ball2.x,
+                    ax2 = dx2 * spring;
+                vx2 += ax2;
+                vx2 *= friction;
+                ball2.x += vx2;
+                
+                var dx3 = targetX - ball3.x,
+                    ax3 = dx3 * spring,
+                    dy3 = targetY - ball3.y,
+                    ay3 = dy3 * spring;
+                vx3 += ax3;
+                vy3 += ay3;
+                vx3 *= friction;
+                vy3 *= friction;
+                ball3.x += vx3;
+                ball3.y += vy3;
+            }
+
+            stage.render();
+
+        }
+    </script>
+</body>
+
+</html>

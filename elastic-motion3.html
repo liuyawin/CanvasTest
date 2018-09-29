@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>弹性运动</title>
+    <style>
+        #canvas {
+            margin: 30px auto;
+            display: block;
+            border: 4px solid blue;
+        }
+    </style>
+</head>
+
+<body>
+    <canvas id="canvas" width="640" height="320"></canvas>
+    <script src="./js/Polyfill.js"></script>
+    <script src="./js/Sprite.js"></script>
+    <script src="./js/Renderer.js"></script>
+    <script src="./js/Stage.js"></script>
+    <script src="./js/Loader.js"></script>
+    <script src="./js/Graphics.js"></script>
+    <script>
+        var stage = new Stage(document.getElementById('canvas'));
+
+        var loader = new Loader();
+        loader.add({ name: 'ball', src: './images/ball.png' });
+        loader.load(createScene);
+
+        function createScene() {
+            var balls = [],
+                spring = 0.02,
+                friction = 0.9,
+                gravity = 0.5,
+                canvasTop = stage.canvas.offsetTop,
+                canvasLeft = stage.canvas.offsetLeft,
+                mouseX,
+                mouseY;
+
+            //创建6个小球
+            for (var i = 0; i < 6; i++) {
+                var ball = new Sprite({
+                    x: stage.width / 2,
+                    y: stage.height / 2,
+                    width: 32,
+                    height: 32,
+                    pivotX: 16,
+                    pivotY: 16,
+                    image: loader.get('ball')
+                });
+                ball.vx = 0;
+                ball.vy = 0;
+                stage.addChild(ball);
+                balls.push(ball);
+            }
+
+
+            var graphic = new Graphics({ ctx: stage.ctx });
+            stage.addChild(graphic);
+
+            stage.update = function () {
+                if (mouseX === undefined) {
+                    return;
+                }
+
+                graphic.clear();
+                graphic.lineStyle();
+
+                moveBall(balls[0], mouseX, mouseY);
+                graphic.moveTo(mouseX, mouseY);
+                graphic.lineTo(balls[0].x, balls[0].y);
+                for (var i = 1; i < balls.length; i++) {
+                    moveBall(balls[i], balls[i - 1].x, balls[i - 1].y);
+                    graphic.lineTo(balls[i].x, balls[i].y);
+                }
+
+                graphic.endFill();
+            }
+
+            stage.render();
+
+            stage.canvas.addEventListener('mousedown', handleMouseDown);
+
+            function handleMouseDown(e) {
+                mouseX = e.clientX - canvasLeft;
+                mouseY = e.clientY - canvasTop;
+
+                window.addEventListener('mousemove', handleMouseMove);
+                window.addEventListener('mouseup', handleMouseUp);
+
+            }
+            function handleMouseMove(e) {
+                mouseX = e.clientX - canvasLeft;
+                mouseY = e.clientY - canvasTop;
+            }
+            function handleMouseUp(e) {
+                window.removeEventListener('mousemove', handleMouseMove);
+                window.removeEventListener('mouseup', handleMouseUp);
+            }
+            function moveBall(ball, targetX, targetY) {
+                ball.vx += (targetX - ball.x) * spring;
+                ball.vy += (targetY - ball.y) * spring;
+                ball.vy += gravity;
+                ball.vx *= friction;
+                ball.vy *= friction;
+                ball.x += ball.vx;
+                ball.y += ball.vy;
+            }
+        }
+    </script>
+</body>
+
+</html>
