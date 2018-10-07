@@ -1,24 +1,24 @@
 function Loader(){
-    this._srcArr = [];
+    this._imgObjArr = [];
     this._imgs = {};
 }
 
 Loader.prototype = {
     constructor: Loader,
-    add: function(src){
-        this._srcArr.push(src);
+    add: function(imgObj){
+        this._imgObjArr.push(imgObj);
     },
     load: function(callback){
         var _this = this;
         var count = 0;
-        for (var i = 0; i < this._srcArr.length; i++) {
-            var imgObj = this._srcArr[i];
+        for (var i = 0; i < this._imgObjArr.length; i++) {
+            var imgObj = this._imgObjArr[i];
             var src = imgObj.src;
             var img = new Image();
             img.onload = function(){
                 count++;
                 _this._imgs[imgObj.name] = img;
-                if (count === _this._srcArr.length) {
+                if (count === _this._imgObjArr.length) {
                     if (callback) {
                         callback();
                     }
